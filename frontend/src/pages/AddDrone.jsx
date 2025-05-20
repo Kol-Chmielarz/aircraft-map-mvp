@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import '../FormStyles.css';
 
 export default function AddDrone() {
   const [model, setModel] = useState('');
@@ -6,10 +7,12 @@ export default function AddDrone() {
   const [nickname, setNickname] = useState('');
   const [description, setDescription] = useState('');
   const [message, setMessage] = useState('');
+  const [success, setSuccess] = useState(false);
 
   async function handleAddDrone(e) {
     e.preventDefault();
     setMessage('');
+    setSuccess(false);
     try {
       const token = localStorage.getItem('token');
       const res = await fetch('http://localhost:4000/api/drones', {
@@ -28,6 +31,7 @@ export default function AddDrone() {
       const data = await res.json();
       if (res.ok) {
         setMessage('Drone registered!');
+        setSuccess(true);
         setModel(''); setSerial(''); setNickname(''); setDescription('');
       } else {
         setMessage(data.error || 'Failed to add drone');
@@ -38,41 +42,45 @@ export default function AddDrone() {
   }
 
   return (
-    <div style={{ maxWidth: 400, margin: '3rem auto', textAlign: 'center' }}>
+    <div className="form-container">
       <h2>Add DJI Drone</h2>
       <form onSubmit={handleAddDrone}>
+        <label className="form-label">Model</label>
         <input
           type="text"
+          className="form-input"
           placeholder="Model (e.g. DJI Mini 3 Pro)"
           value={model}
           onChange={e => setModel(e.target.value)}
           required
-          style={{ width: '100%', marginBottom: 10, padding: 8 }}
         />
+        <label className="form-label">Serial Number</label>
         <input
           type="text"
+          className="form-input"
           placeholder="Serial Number"
           value={serial}
           onChange={e => setSerial(e.target.value)}
           required
-          style={{ width: '100%', marginBottom: 10, padding: 8 }}
         />
+        <label className="form-label">Nickname (optional)</label>
         <input
           type="text"
+          className="form-input"
           placeholder="Nickname (optional)"
           value={nickname}
           onChange={e => setNickname(e.target.value)}
-          style={{ width: '100%', marginBottom: 10, padding: 8 }}
         />
+        <label className="form-label">Description (optional)</label>
         <textarea
+          className="form-textarea"
           placeholder="Description (optional)"
           value={description}
           onChange={e => setDescription(e.target.value)}
-          style={{ width: '100%', marginBottom: 10, padding: 8 }}
         />
-        <button type="submit" style={{ width: '100%', padding: 10 }}>Add Drone</button>
+        <button type="submit" className="form-button">Add Drone</button>
       </form>
-      {message && <p style={{ marginTop: 16 }}>{message}</p>}
+      {message && <p className={`form-message${success ? ' success' : ' error'}`}>{message}</p>}
     </div>
   );
 } 

@@ -179,4 +179,16 @@ app.get('/api/drone-position/:device_id', protect, async (req, res) => {
   }
 });
 
+app.get('/api/drones', protect, async (req, res) => {
+  try {
+    const result = await pool.query(
+      'SELECT id, model, serial_number, nickname, description, created_at FROM drones WHERE user_id = $1 ORDER BY created_at DESC',
+      [req.user.id]
+    );
+    res.json({ drones: result.rows });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 app.listen(PORT, () => console.log(`API listening on :${PORT}`)); 

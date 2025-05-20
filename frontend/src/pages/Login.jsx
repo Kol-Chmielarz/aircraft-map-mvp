@@ -1,15 +1,18 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../FormStyles.css';
 
 export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+  const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
 
   async function handleLogin(e) {
     e.preventDefault();
     setMessage('');
+    setSuccess(false);
     try {
       const res = await fetch('http://localhost:4000/api/auth/login', {
         method: 'POST',
@@ -19,8 +22,9 @@ export default function Login() {
       const data = await res.json();
       if (res.ok && data.token) {
         localStorage.setItem('token', data.token);
-        setMessage('Login successful!');
-        setTimeout(() => navigate('/map'), 500); // Redirect after short delay
+        setMessage('Login successful! Redirecting...');
+        setSuccess(true);
+        setTimeout(() => navigate('/map'), 1000);
       } else {
         setMessage(data.error || 'Login failed');
       }
@@ -30,28 +34,30 @@ export default function Login() {
   }
 
   return (
-    <div style={{ maxWidth: 400, margin: '3rem auto', textAlign: 'center' }}>
+    <div className="form-container">
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
+        <label className="form-label">Username</label>
         <input
           type="text"
+          className="form-input"
           placeholder="Username"
           value={username}
           onChange={e => setUsername(e.target.value)}
           required
-          style={{ width: '100%', marginBottom: 10, padding: 8 }}
         />
+        <label className="form-label">Password</label>
         <input
           type="password"
+          className="form-input"
           placeholder="Password"
           value={password}
           onChange={e => setPassword(e.target.value)}
           required
-          style={{ width: '100%', marginBottom: 10, padding: 8 }}
         />
-        <button type="submit" style={{ width: '100%', padding: 10 }}>Login</button>
+        <button type="submit" className="form-button">Login</button>
       </form>
-      {message && <p style={{ marginTop: 16 }}>{message}</p>}
+      {message && <p className={`form-message${success ? ' success' : ' error'}`}>{message}</p>}
     </div>
   );
 } 

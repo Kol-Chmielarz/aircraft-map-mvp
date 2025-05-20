@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import '../FormStyles.css';
 
 export default function ViewDrones() {
   const [drones, setDrones] = useState([]);
@@ -48,7 +49,7 @@ export default function ViewDrones() {
               <div><strong>Model:</strong> {drone.model}</div>
               <div><strong>Serial:</strong> {drone.serial_number}</div>
               <div><strong>Nickname:</strong> {drone.nickname}</div>
-              <button onClick={() => fetchPosition(drone.serial_number)} style={{ marginTop: 8 }}>Get Live Position</button>
+              <button className="form-button" onClick={() => fetchPosition(drone.serial_number)} style={{ marginTop: 8, width: 180 }}>Get Live Position</button>
               {positions[drone.serial_number] && (
                 <div style={{ marginTop: 8 }}>
                   <strong>Live Position:</strong>
